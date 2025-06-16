@@ -21,7 +21,7 @@ def plotcurveLegend(title,xlim=[0,5],ylim=[0,100],**kwargs):
     axs1.set_ylabel('Modulus(MPa)', fontdict=font_dict2)
     axs1.legend(Legend, fontsize=16)
     
-    ytick = [ele for ele in range(ylim[0],ylim[1],10)]
+    # ytick = [ele for ele in range(ylim[0],ylim[1],10)]
     axs1.set_ylim(ylim)
     axs1.set_yticks(ytick)
     
@@ -43,3 +43,5 @@ xy2 = np.array([df_Voigt['phase_name'], y2])
 xy3 = np.array([df_Voigt['phase_name'], y3])
 
 sns.set_theme()
+sns.set_style("whitegrid")
+plotcurve(Legend,title,ylim=[0,160],xy1=xy1,xy2=xy2,xy3=xy3)
