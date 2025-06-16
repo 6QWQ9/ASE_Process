@@ -1,4 +1,69 @@
+%matplotlib inline
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+import seaborn as sns
+rootdir="E:/linux_trans/Elas/"
+phase_name=[];
+Bulk_Voigt=[];Shear_Voigt=[];Young_Voigt=[];Possion_Voigt=[]
+Bulk_Reuss=[];Shear_Reuss=[];Young_Reuss=[];Possion_Reuss=[]
+Bulk_Avg=[];Shear_Avg=[];Young_Avg=[];Possion_Avg=[]
+dir_list = next(os.walk(rootdir))[1]
+for count, value in enumerate(dir_list):
+    if value[0]!='.':
+        fname=rootdir+value+'/Modulus.txt'
+        print('open file in '+value)
+        with open (fname) as f:
+            data=f.readlines()
+            df=pd.DataFrame(data[7:11])
+            df=df.iloc[:,0].str.split(expand=True)
+            P=pd.DataFrame(df.iloc[3,:].T)
+            P.drop(P.columns[5],axis=1,inplace=True)
+            P.drop(P.columns[1],axis=1,inplace=True)
+            df.drop(index=3,axis=0,inplace=True)
+            df.drop(df.columns[1],axis=1,inplace=True)
+            df.drop(df.columns[1],axis=1,inplace=True)
+            df.columns=['Property','Voigt','Reuss','Avg']
+            P.columns=df.columns
+            df=pd.concat([df,P])
+            phase_name.append(value[0:-5])
+            #Voigt
+            Bulk_Voigt.append(df['Voigt'][0])
+            Shear_Voigt.append(df['Voigt'][1])
+            Young_Voigt.append(df['Voigt'][2])
+            Possion_Voigt.append(df['Voigt'][3])
+            #Reuss
+            Bulk_Reuss.append(df['Reuss'][0])
+            Shear_Reuss.append(df['Reuss'][1])
+            Young_Reuss.append(df['Reuss'][2])
+            Possion_Reuss.append(df['Reuss'][3])
+            # Average
+            Bulk_Avg.append(df['Avg'][0])
+            Shear_Avg.append(df['Avg'][1])
+            Young_Avg.append(df['Avg'][2])
+            Possion_Avg.append(df['Avg'][3])
+
+data_Voigt={'phase_name':phase_name,'Bulk':Bulk_Voigt,'Shear':Shear_Voigt,
+           'Young':Young_Voigt,'Possion':Possion_Voigt}
+data_Reuss={'phase_name':phase_name,'Bulk':Bulk_Reuss,'Shear':Shear_Reuss,
+            'Young':Young_Reuss,'Possion':Possion_Reuss}
+data_Avg={'phase_name':phase_name,'Bulk':Bulk_Avg,'Shear':Shear_Avg,
+          'Young':Young_Avg,'Possion':Possion_Avg}
+df_Voigt=pd.DataFrame(data_Voigt)
+df_Reuss=pd.DataFrame(data_Reuss)
+df_Avg=pd.DataFrame(data_Avg)
+df_Voigt.iloc[:,1:4]=df_Voigt.iloc[:,1:4].astype(float)
+print(df_Voigt)
+type(df_Voigt.iloc[1,1])
+
+df_Voigt = df_Voigt.sort_values(by='phase_name')
+df_Reuss = df_Reuss.sort_values(by='phase_name')
+df_Avg = df_Avg.sort_values(by='phase_name')
+
+
 # 函数定义部分
+
 def plotcurveLegend(title,xlim=[0,5],ylim=[0,100],**kwargs):
     font_dict = dict(fontsize=24,color='k',weight='bold',style='normal') #titleLe
     font_dict2 = dict(fontsize=18,color='k',weight='semibold',style='normal') #tick
